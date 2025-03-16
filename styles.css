@@ -87,6 +87,8 @@ body {
 
 .music-container .track-image {
   width: 240px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   border-radius: 6px;
 }
 

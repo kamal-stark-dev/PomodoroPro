@@ -15,15 +15,16 @@ const nextSongEl = document.getElementById("nextSong");
 
 const trackImageEl = document.getElementById("track-image");
 
+// handling keydown events
 document.querySelector("body").addEventListener("keydown", (event) => {
   if (event.key === " ") {
     playPauseSong();
   }
   if (event.key === "ArrowRight") {
-    forward10seconds();
+    song.currentTime = Math.min(song.duration, song.currentTime + 10);
   }
   if (event.key === "ArrowLeft") {
-    rewind10seconds();
+    song.currentTime = Math.max(0, song.currentTime - 10);
   }
   if (event.ctrlKey) {
     if (event.key === "ArrowLeft") {
@@ -45,13 +46,13 @@ function changeSong(idx = 0) {
   trackImageEl.src = songs[idx].bannerLink;
   song.getElementsByTagName("source")[0].src = songs[idx].songLink;
   song.load(); // to load the new song
-  songTitleEl.innerText = getSongTitle();
+  songTitleEl.innerText = songs[idx].songTitle;
 
   playPause.classList.remove("ri-play-fill");
   playPause.classList.add("ri-pause-fill");
   song.play();
 }
-// changeSong(idx);
+changeSong(idx);
 
 prevSongEl.addEventListener("click", () => {
   idx = (idx - 1 + songsLength) % songsLength;
@@ -62,9 +63,6 @@ nextSongEl.addEventListener("click", () => {
   idx = (idx + 1) % songsLength;
   changeSong(idx);
 });
-
-// song title
-songTitleEl.innerText = getSongTitle();
 
 // song volume
 song.volume = 0.4;
@@ -83,11 +81,11 @@ song.addEventListener("timeupdate", () => {
 
 // rewind and forward - 10 seconds
 rewindEl.addEventListener("click", () => {
-  rewind10seconds();
+  song.currentTime = Math.max(0, song.currentTime - 10);
 });
 
 forwardEl.addEventListener("click", () => {
-  forward10seconds();
+  song.currentTime = Math.min(song.duration, song.currentTime + 10);
 });
 
 function playPauseSong() {
@@ -108,18 +106,10 @@ function formatTime(totalSeconds) {
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
-function getSongTitle() {
-  const songLink = song.getElementsByTagName("source")[0].src;
-  const songName = songLink
-    .substring(songLink.lastIndexOf("/") + 1, songLink.lastIndexOf("."))
-    .replace(/%20/g, " ");
-  return songName;
-}
-
-function forward10seconds() {
-  song.currentTime = Math.min(song.duration, song.currentTime + 10);
-}
-
-function rewind10seconds() {
-  song.currentTime = Math.max(0, song.currentTime - 10);
-}
+// function getSongTitle() {
+//   const songLink = song.getElementsByTagName("source")[0].src;
+//   const songName = songLink
+//     .substring(songLink.lastIndexOf("/") + 1, songLink.lastIndexOf("."))
+//     .replace(/%20/g, " ");
+//   return songName;
+// }
